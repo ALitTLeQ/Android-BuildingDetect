@@ -2,6 +2,7 @@ package com.asdc.yzu.myndk;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
@@ -126,13 +128,14 @@ public class MainActivity extends ActionBarActivity  implements CameraBridgeView
         mRgba = new Mat(height, width, CvType.CV_8UC4);
         mIntermediateMat = new Mat(height, width, CvType.CV_8UC4);
         mGray = new Mat(height, width, CvType.CV_8UC1);
+        cnt = 0;
     }
 
     @Override
     public void onCameraViewStopped() {
 
     }
-
+    private  boolean lock = true;
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
@@ -143,10 +146,30 @@ public class MainActivity extends ActionBarActivity  implements CameraBridgeView
                 Imgproc.Canny(mGray, mIntermediateMat, 50, threshold);
                 Imgproc.cvtColor(mIntermediateMat, mRgba, Imgproc.COLOR_GRAY2BGRA);
                 */
-            int kps = FindFeatures(mGray.getNativeObjAddr(), mRgba.getNativeObjAddr(), mTemp.getNativeObjAddr());
-            Log.i(TAG, String.valueOf(kps));
-
-
+        if(cnt > 10) {
+            //lock = false;
+            mIntermediateMat = inputFrame.gray();
+            handler.post(myRunnable);
+            cnt = 0;
+        }
+        cnt++;
         return mRgba;
     }
+    private Handler handler = new Handler();
+
+    private Runnable myRunnable= new Runnable() {
+        public void run() {
+            Mat Rgba = mRgba.clone();
+            Mat Gray = mIntermediateMat.clone();
+            Mat Temp = mTemp.clone();
+            double scale = 0.5;
+            Log.i(TAG, String.valueOf(Rgba.width()));
+            Size dsize = new Size(Rgba.width() * scale, Rgba.height()*scale);
+            Imgproc.resize(Rgba,Rgba, dsize);
+            Imgproc.resize(Gray, Gray, dsize);
+            int kps = FindFeatures(Rgba.getNativeObjAddr(), Gray.getNativeObjAddr(), Temp.getNativeObjAddr());
+            Log.i(TAG, String.valueOf(kps));
+            //lock = true;
+        }
+    };
 }
