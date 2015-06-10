@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\yzu\Documents\GitHub\Android-BuildingDetect\tutorial-3-cameracontrol\openCVTutorial3CameraControl\build\intermediates\exploded-aar\tutorial-3-cameracontrol\openCVLibrary2410\unspecified\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="29ae8a7b6e089b7598fe66f2a00ef60c10afe4b9">
+        <dex dex="C:\Users\yzu\Documents\GitHub\Android-BuildingDetect\tutorial-3-cameracontrol\openCVTutorial3CameraControl\build\intermediates\pre-dexed\debug\classes-a23b3be707a5dd3119bc1d346d46281734dcc38b.jar" />
+    </item>
+
+</items>
