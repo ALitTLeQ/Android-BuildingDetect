@@ -19,10 +19,12 @@ public class OpenCvUtils {
             StringBuilder builder = new StringBuilder();
 
             for (int i = 0; i < mat.rows(); i++) {
-                double[] d = mat.get(i, 0);
-                builder.append(d[0]);
-                if (i != mat.rows() - 1) {
-                    builder.append(",");
+                for (int j = 0; j < mat.cols(); j++) {
+                    double[] d = mat.get(i, j);
+                    builder.append(d[0]);
+                    if (i != mat.rows() - 1) {
+                        builder.append(",");
+                    }
                 }
             }
 
@@ -34,10 +36,10 @@ public class OpenCvUtils {
             Gson gson = new Gson();
             String json = gson.toJson(obj);
 
-            Log.d("opencv_detector", "json: " + json);
+            Log.d(MainActivity.TAG, "json: " + json);
             return json;
         } else {
-            Log.e("opencv_detector", "Mat not continuous.");
+            Log.e(MainActivity.TAG, "Mat not continuous.");
         }
         return "{}";
     }
@@ -64,4 +66,28 @@ public class OpenCvUtils {
 
     }
 
+    public static String matToString(Mat mat)
+    {
+        JsonObject obj = new JsonObject();
+
+        if (mat.isContinuous()) {
+            StringBuilder builder = new StringBuilder(mat.dump());
+
+
+            obj.addProperty("rows", mat.rows());
+            obj.addProperty("cols", mat.cols());
+            obj.addProperty("type", mat.type());
+            obj.addProperty("data", builder.toString());
+
+            Gson gson = new Gson();
+            String json = gson.toJson(obj);
+
+            Log.d(MainActivity.TAG, "json: " + json);
+            return json;
+        } else {
+            Log.e(MainActivity.TAG, "Mat not continuous.");
+        }
+        return "{}";
+
+    }
 }

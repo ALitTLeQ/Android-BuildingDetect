@@ -31,6 +31,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     private CameraBridgeViewBase mOpenCvCameraView;
     private boolean              mIsJavaCamera = true;
     private Mat mRgba;
+    private Mat mGray;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -91,12 +92,14 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     }
     public void Detect(View view) {
         new Thread(new ComputeThread(this.handler)).start();
+        Log.i(TAG, mGray.toString());
     }
 
 
     @Override
     public void onCameraViewStarted(int width, int height) {
         mRgba = new Mat(height, width, CvType.CV_8UC4);
+        mGray = new Mat(height, width, CvType.CV_8UC1);
     }
 
     @Override
@@ -107,6 +110,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRgba =inputFrame.rgba();
+        mGray =inputFrame.gray();
         return mRgba;
     }
 
@@ -137,6 +141,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
             String url = "http://140.109.143.55:5000/";
             String url2 = "http://140.109.143.55:5000/api/test";
             String content = "input=" + OpenCvUtils.matToJson(mRgba.clone());
+            String content2 = "input=" + OpenCvUtils.matToString(mGray.clone());
             String resultDate = "";
 
             startTime = System.nanoTime();
@@ -148,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
 
 
             startTime = System.nanoTime();
-            resultDate = HttpRest.POST(url2, content);
+            resultDate = HttpRest.POST(url2, content2);
             Log.i(TAG, resultDate);
             endTime = System.nanoTime();
             Log.i(TAG, "Time: " +  new String(String.valueOf((endTime - startTime) / 1000000.0) + "ms"));
