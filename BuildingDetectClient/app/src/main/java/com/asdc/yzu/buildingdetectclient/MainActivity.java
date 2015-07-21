@@ -169,7 +169,8 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
 
             startTime = System.nanoTime();
             //上傳圖片並接收結果
-            BuildingMatch = uploadFile(url2, path);
+            String BuildingAround = new String("1,2,20");
+            BuildingMatch = uploadFile(url2, path, BuildingAround);
 
             endTime = System.nanoTime();
 
@@ -183,7 +184,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     }
 
     private int serverResponseCode = 0;
-    public String uploadFile(String upLoadServerUri, String sourceFileUri) {
+    public String uploadFile(String upLoadServerUri, String sourceFileUri, String BuildingAround) {
         String fileName = sourceFileUri;
         String result = new String("");
 
@@ -225,7 +226,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
 
                 dos.writeBytes(twoHyphens + boundary + lineEnd);
                 dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                        + fileName + "\"" + lineEnd);
+                        + BuildingAround + "\"" + lineEnd);
 
                 dos.writeBytes(lineEnd);
 
